@@ -233,8 +233,6 @@ namespace DataZipper
 
         private void timerLogRefresher_Tick(object sender, EventArgs e)
         {
-            Debug.WriteLine("refresh" + DateTime.Now.ToString());
-
             using (StreamReader sr = new StreamReader(logPath))
             {
                 List<string> lines = new List<string>();
@@ -245,15 +243,12 @@ namespace DataZipper
                 }
 
                 int count = lines.Count;
-                int limit = count;
                 int visibleItems = listBoxLog.ClientSize.Height / listBoxLog.ItemHeight;
 
                 if (count > visibleItems)
                 {
-                    limit = count - visibleItems;
+                    lines.RemoveRange(0, count - visibleItems);
                 }
-
-                lines.RemoveRange(0, limit);
 
                 listBoxLog.Items.Clear();
                 listBoxLog.Items.AddRange(lines.ToArray());
