@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataZipper", "DataZipper\DataZipper.csproj", "{CE453BCF-1486-433A-99B5-998A30965F7B}"
+EndProject
+Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "DataZipperInstaller", "DataZipperInstaller\DataZipperInstaller.aiproj", "{DEA82E9A-E8A7-4A25-9555-2785ADFDE9E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		All|Any CPU = All|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.All|Any CPU.ActiveCfg = Release|Any CPU
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.All|Any CPU.Build.0 = Release|Any CPU
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE453BCF-1486-433A-99B5-998A30965F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA82E9A-E8A7-4A25-9555-2785ADFDE9E4}.All|Any CPU.ActiveCfg = DefaultBuild
+		{DEA82E9A-E8A7-4A25-9555-2785ADFDE9E4}.Debug|Any CPU.ActiveCfg = DefaultBuild
+		{DEA82E9A-E8A7-4A25-9555-2785ADFDE9E4}.Release|Any CPU.ActiveCfg = DefaultBuild
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D34A812C-BC8A-455F-B400-A50C4E8B58A6}
+	EndGlobalSection
+EndGlobal
