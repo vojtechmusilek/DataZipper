@@ -12,9 +12,9 @@ C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\DataZipper.exe.confi
 C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\DataZipper.exe
 C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\DataZipper.pdb
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csprojAssemblyReference.cache
-C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.Form1.resources
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.Properties.Resources.resources
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.GenerateResource.cache
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.CoreCompileInputs.cache
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.exe
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.pdb
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.FormMain.resources
