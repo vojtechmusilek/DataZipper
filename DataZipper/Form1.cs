@@ -26,7 +26,12 @@ namespace DataZipper
         public FormMain()
         {
             InitializeComponent();
+            InitializeDataZipper();
+        }
 
+        // === Initialization ===
+        private void InitializeDataZipper()
+        {
             string applicationDataFolder = Environment.ExpandEnvironmentVariables($@"%AppData%\Data Zipper\");
 
             logPath = applicationDataFolder + DateTime.Now.ToString("yyyyMMdd") + ".log";
@@ -47,8 +52,6 @@ namespace DataZipper
             {
                 config = new Configuration();
             }
-
-            
 
             if (this.WindowState == FormWindowState.Minimized)
             {
@@ -221,6 +224,8 @@ namespace DataZipper
             }
         }
         
+
+        // === Timers ===
         private void timerMain_Tick(object sender, EventArgs e)
         {
             DataZip();
@@ -232,7 +237,26 @@ namespace DataZipper
 
             using (StreamReader sr = new StreamReader(logPath))
             {
-                richTextBoxLog.Text = sr.ReadToEnd();
+                List<string> lines = new List<string>();
+
+                while (!sr.EndOfStream)
+                {
+                    lines.Add(sr.ReadLine());
+                }
+
+                int count = lines.Count;
+                int limit = count;
+                int visibleItems = listBoxLog.ClientSize.Height / listBoxLog.ItemHeight;
+
+                if (count > visibleItems)
+                {
+                    limit = count - visibleItems;
+                }
+
+                lines.RemoveRange(0, limit);
+
+                listBoxLog.Items.Clear();
+                listBoxLog.Items.AddRange(lines.ToArray());
             }
         }
 

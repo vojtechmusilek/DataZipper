@@ -42,9 +42,9 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.timerLogRefresher = new System.Windows.Forms.Timer(this.components);
             this.buttonRestartZipper = new System.Windows.Forms.Button();
+            this.listBoxLog = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,8 +61,7 @@
             // notifyIcon
             // 
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "notifyIcon";
-            this.notifyIcon.Visible = true;
+            this.notifyIcon.Text = "Data Zipper";
             this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
             // 
             // buttonDestination
@@ -158,17 +157,6 @@
             this.timerMain.Interval = 600000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
-            // richTextBoxLog
-            // 
-            this.richTextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxLog.Location = new System.Drawing.Point(229, 37);
-            this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(425, 231);
-            this.richTextBoxLog.TabIndex = 12;
-            this.richTextBoxLog.Text = "";
-            // 
             // timerLogRefresher
             // 
             this.timerLogRefresher.Interval = 1000;
@@ -176,7 +164,7 @@
             // 
             // buttonRestartZipper
             // 
-            this.buttonRestartZipper.Location = new System.Drawing.Point(12, 245);
+            this.buttonRestartZipper.Location = new System.Drawing.Point(12, 239);
             this.buttonRestartZipper.Name = "buttonRestartZipper";
             this.buttonRestartZipper.Size = new System.Drawing.Size(185, 23);
             this.buttonRestartZipper.TabIndex = 14;
@@ -184,13 +172,24 @@
             this.buttonRestartZipper.UseVisualStyleBackColor = true;
             this.buttonRestartZipper.Click += new System.EventHandler(this.buttonRestartZipper_Click);
             // 
+            // listBoxLog
+            // 
+            this.listBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxLog.FormattingEnabled = true;
+            this.listBoxLog.Location = new System.Drawing.Point(229, 37);
+            this.listBoxLog.Name = "listBoxLog";
+            this.listBoxLog.Size = new System.Drawing.Size(405, 225);
+            this.listBoxLog.TabIndex = 15;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 279);
+            this.ClientSize = new System.Drawing.Size(647, 277);
+            this.Controls.Add(this.listBoxLog);
             this.Controls.Add(this.buttonRestartZipper);
-            this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxName);
             this.Controls.Add(this.label4);
@@ -202,6 +201,7 @@
             this.Controls.Add(this.buttonDestination);
             this.Controls.Add(this.buttonSources);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(663, 316);
             this.Name = "FormMain";
             this.Text = "Data Zipper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -226,9 +226,9 @@
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Timer timerMain;
-        private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Timer timerLogRefresher;
         private System.Windows.Forms.Button buttonRestartZipper;
+        private System.Windows.Forms.ListBox listBoxLog;
     }
 }
 
