@@ -17,4 +17,8 @@ C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.Ge
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.CoreCompileInputs.cache
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.exe
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.pdb
-C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.FormMain.resources
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.Forms.ConfigurationForm.resources
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.MainForm.resources
+C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\Newtonsoft.Json.dll
+C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\Newtonsoft.Json.xml
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.CopyComplete
