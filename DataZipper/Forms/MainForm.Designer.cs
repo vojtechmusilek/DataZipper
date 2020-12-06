@@ -82,12 +82,14 @@
 			this.buttonRestartZipper.TabIndex = 14;
 			this.buttonRestartZipper.Text = "Restart data zipper";
 			this.buttonRestartZipper.UseVisualStyleBackColor = true;
+			this.buttonRestartZipper.Click += new System.EventHandler(this.buttonRestartZipper_Click);
 			// 
 			// listBoxLog
 			// 
 			this.listBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.listBoxLog.FormattingEnabled = true;
 			this.listBoxLog.Location = new System.Drawing.Point(229, 66);
 			this.listBoxLog.Name = "listBoxLog";
@@ -105,7 +107,6 @@
 			this.listBoxConfigs.Size = new System.Drawing.Size(192, 199);
 			this.listBoxConfigs.TabIndex = 16;
 			this.listBoxConfigs.SelectedValueChanged += new System.EventHandler(this.listBox1_SelectedValueChanged);
-			this.listBoxConfigs.TabIndexChanged += new System.EventHandler(this.listBox1_TabIndexChanged);
 			// 
 			// buttonNewConfig
 			// 
@@ -154,6 +155,9 @@
 			this.MinimumSize = new System.Drawing.Size(663, 316);
 			this.Name = "MainForm";
 			this.Text = "Data Zipper";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+			this.Shown += new System.EventHandler(this.MainForm_Shown);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -22,3 +22,7 @@ C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.MainForm.
 C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\Newtonsoft.Json.dll
 C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\Newtonsoft.Json.xml
 C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.csproj.CopyComplete
+C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\DataZipper.exe.manifest
+C:\Users\vojte\source\repos\DataZipper\DataZipper\bin\Debug\DataZipper.application
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.exe.manifest
+C:\Users\vojte\source\repos\DataZipper\DataZipper\obj\Debug\DataZipper.application

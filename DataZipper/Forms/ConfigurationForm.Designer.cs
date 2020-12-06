@@ -40,6 +40,8 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
+			this.buttonSourceFolder = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -61,7 +63,7 @@
 			// 
 			// buttonSaveConfig
 			// 
-			this.buttonSaveConfig.Location = new System.Drawing.Point(15, 166);
+			this.buttonSaveConfig.Location = new System.Drawing.Point(15, 202);
 			this.buttonSaveConfig.Name = "buttonSaveConfig";
 			this.buttonSaveConfig.Size = new System.Drawing.Size(270, 30);
 			this.buttonSaveConfig.TabIndex = 17;
@@ -72,7 +74,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(239, 106);
+			this.label3.Location = new System.Drawing.Point(239, 142);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(43, 13);
 			this.label3.TabIndex = 16;
@@ -81,7 +83,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 106);
+			this.label2.Location = new System.Drawing.Point(12, 142);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(45, 13);
 			this.label2.TabIndex = 15;
@@ -89,7 +91,7 @@
 			// 
 			// numericUpDownInterval
 			// 
-			this.numericUpDownInterval.Location = new System.Drawing.Point(119, 104);
+			this.numericUpDownInterval.Location = new System.Drawing.Point(119, 140);
 			this.numericUpDownInterval.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -101,7 +103,7 @@
 			// 
 			// buttonDestination
 			// 
-			this.buttonDestination.Location = new System.Drawing.Point(119, 68);
+			this.buttonDestination.Location = new System.Drawing.Point(119, 104);
 			this.buttonDestination.Name = "buttonDestination";
 			this.buttonDestination.Size = new System.Drawing.Size(163, 30);
 			this.buttonDestination.TabIndex = 13;
@@ -131,7 +133,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 77);
+			this.label4.Location = new System.Drawing.Point(12, 113);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(79, 13);
 			this.label4.TabIndex = 21;
@@ -140,7 +142,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 130);
+			this.label6.Location = new System.Drawing.Point(12, 166);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(49, 13);
 			this.label6.TabIndex = 22;
@@ -151,17 +153,38 @@
 			this.checkBoxEnabled.AutoSize = true;
 			this.checkBoxEnabled.Checked = true;
 			this.checkBoxEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxEnabled.Location = new System.Drawing.Point(119, 130);
+			this.checkBoxEnabled.Location = new System.Drawing.Point(119, 166);
 			this.checkBoxEnabled.Name = "checkBoxEnabled";
 			this.checkBoxEnabled.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxEnabled.TabIndex = 23;
 			this.checkBoxEnabled.UseVisualStyleBackColor = true;
 			// 
+			// buttonSourceFolder
+			// 
+			this.buttonSourceFolder.Location = new System.Drawing.Point(119, 68);
+			this.buttonSourceFolder.Name = "buttonSourceFolder";
+			this.buttonSourceFolder.Size = new System.Drawing.Size(163, 30);
+			this.buttonSourceFolder.TabIndex = 24;
+			this.buttonSourceFolder.Text = "Select source folder";
+			this.buttonSourceFolder.UseVisualStyleBackColor = true;
+			this.buttonSourceFolder.Click += new System.EventHandler(this.buttonSourceFolders_Click);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(12, 77);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(78, 13);
+			this.label7.TabIndex = 25;
+			this.label7.Text = "Source folders:";
+			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(294, 208);
+			this.ClientSize = new System.Drawing.Size(294, 246);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.buttonSourceFolder);
 			this.Controls.Add(this.checkBoxEnabled);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label4);
@@ -197,5 +220,7 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.CheckBox checkBoxEnabled;
+		private System.Windows.Forms.Button buttonSourceFolder;
+		private System.Windows.Forms.Label label7;
 	}
 }

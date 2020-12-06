@@ -9,8 +9,11 @@ namespace DataZipper
 {
 	public class Configuration
 	{
-		[JsonProperty(PropertyName = "sources")]
-		public List<string> SourcePaths { get; set; }
+		[JsonProperty(PropertyName = "source_files")]
+		public List<string> SourceFiles { get; set; }
+
+		[JsonProperty(PropertyName = "source_folder")]
+		public string SourceFolder { get; set; }
 
 		[JsonProperty(PropertyName = "destination")]
 		public string DestinationPath { get; set; }
@@ -30,7 +33,7 @@ namespace DataZipper
 
 		public Configuration()
 		{
-			SourcePaths = new List<string>();
+			SourceFiles = new List<string>();
 		}
 	}
 }

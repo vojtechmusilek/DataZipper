@@ -2,18 +2,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace DataZipper
 {
@@ -24,36 +17,216 @@ namespace DataZipper
 		private string m_LogPath;
 		private string m_ConfigurationsPath;
 
+		private string m_SelectedConfigName;
+
 		private List<Configuration> m_Configurations;
 		private List<Zipper> m_Zippers = new List<Zipper>();
 
 		private Logger m_Logger;
 
-		//private Configuration config { get; set; }
-		//private Logger logger { get; set; }
-		//private string configPath { get; set; }
-		//private string logPath { get; set; }
-		//private string tmpPath { get; set; }
+		private readonly object m_Lock = new object();
 
 		public MainForm()
 		{
 			InitializeComponent();
+		}
 
+		#region Form events
+		private void MainForm_Shown(object sender, EventArgs e)
+		{
 			PrepareAppDataPaths();
 			LoadConfigurations();
 
 			InitializeLogger();
-			
+			InitializeDataZipper();
+
 			InitializeTemporaryPaths(m_Configurations);
 			InitializeConfigurations(m_Configurations);
-
+			CleanupTemporaryPaths();
 
 			UpdateConfigListBox();
 		}
 
+		private void buttonNewConfig_Click(object sender, EventArgs e)
+		{
+			ConfigurationForm configurationForm = new ConfigurationForm(new Configuration());
+			configurationForm.Text = configurationForm.Text.Replace("%ACTION%", "New");
+
+			if (configurationForm.ShowDialog() == DialogResult.OK)
+			{
+				Configuration newConfiguration = configurationForm.Configuration;
+				m_Logger.Log("Configuration created", newConfiguration.Name);
+
+				m_Configurations.Add(newConfiguration);
+				SaveConfigurations(m_Configurations);
+
+				List<Configuration> newConfigurations = new List<Configuration>() { newConfiguration };
+				InitializeTemporaryPaths(newConfigurations);
+				InitializeConfigurations(newConfigurations);
+
+				UpdateConfigListBox();
+
+				m_SelectedConfigName = null;
+			}
+		}
+
+		private void buttonEditConfig_Click(object sender, EventArgs e)
+		{
+			if (m_SelectedConfigName == null)
+			{
+				MessageBox.Show("Select configuration to edit");
+				return;
+			}
+
+			Configuration configurationEdit = m_Configurations.Where(x => x.Name == m_SelectedConfigName).First();
+			Zipper zipperEdit = m_Zippers.Where(x => x.Configuration == configurationEdit).First();
+			zipperEdit.Stop();
+
+			ConfigurationForm configurationForm = new ConfigurationForm(configurationEdit);
+			configurationForm.Text = configurationForm.Text.Replace("%ACTION%", "Edit");
+
+			if (configurationForm.ShowDialog() == DialogResult.OK)
+			{
+				configurationEdit = configurationForm.Configuration;
+				m_Logger.Log("Configuration edited", configurationEdit.Name);
+
+				InitializeTemporaryPaths(new List<Configuration>() { configurationEdit });
+
+				SaveConfigurations(m_Configurations);
+
+				UpdateConfigListBox();
+
+				m_SelectedConfigName = null;
+
+				zipperEdit.Start();
+			}
+		}
+
+		private void buttonTrashConfig_Click(object sender, EventArgs e)
+		{
+			if (m_SelectedConfigName == null)
+			{
+				MessageBox.Show("Select configuration to delete");
+				return;
+			}
+
+			if (MessageBox.Show($"This will delete configuration: {m_SelectedConfigName}", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+			{
+				Configuration configurationDelete = m_Configurations.Where(x => x.Name == m_SelectedConfigName).First();
+				Zipper zipperDelete = m_Zippers.Where(x => x.Configuration == configurationDelete).First();
+
+				zipperDelete.Stop();
+
+				m_Zippers = m_Zippers.Where(x => x.Configuration != configurationDelete).ToList();
+				m_Configurations = m_Configurations.Where(x => x != configurationDelete).ToList();
+
+				SaveConfigurations(m_Configurations);
+				UpdateConfigListBox();
+				m_SelectedConfigName = null;
+
+				m_Logger.Log("Configuration deleted", configurationDelete.Name);
+			}
+		}
+
+		private void notifyIcon_Click(object sender, EventArgs e)
+		{
+			Show();
+			this.WindowState = FormWindowState.Normal;
+			notifyIcon.Visible = false;
+
+			timerLogRefresher.Start();
+		}
+
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			if (this.WindowState == FormWindowState.Minimized)
+			{
+				Hide();
+				notifyIcon.Visible = true;
+
+				timerLogRefresher.Stop();
+			}
+		}
+
+		private void buttonRestartZipper_Click(object sender, EventArgs e)
+		{
+			m_Logger.Log("### Data Zipper successfully restarted ###");
+
+			foreach (Zipper zipper in m_Zippers)
+			{
+				zipper.Restart();
+			}
+		}
+
+		private void timerLogRefresher_Tick(object sender, EventArgs e)
+		{
+			lock (m_Lock)
+			{
+				string currentLogPath = m_LogPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+
+				if (!File.Exists(currentLogPath))
+				{
+					var newLog = File.Create(currentLogPath);
+					newLog.Close();
+				}
+
+				using (StreamReader sr = new StreamReader(currentLogPath))
+				{
+					List<string> lines = new List<string>();
+
+					while (!sr.EndOfStream)
+					{
+						lines.Add(sr.ReadLine());
+					}
+
+					int count = lines.Count;
+					int visibleItems = listBoxLog.ClientSize.Height / listBoxLog.ItemHeight;
+
+					if (count > visibleItems)
+					{
+						lines.RemoveRange(0, count - visibleItems);
+					}
+
+					listBoxLog.Items.Clear();
+					listBoxLog.Items.AddRange(lines.ToArray());
+				}
+			}
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			m_Logger.Log("### Data Zipper stoppped ###");
+		}
+
+		private void listBox1_SelectedValueChanged(object sender, EventArgs e)
+		{
+			if (listBoxConfigs.SelectedIndex == -1)
+			{
+				return;
+			}
+
+			m_SelectedConfigName = listBoxConfigs.Items[listBoxConfigs.SelectedIndex].ToString();
+		}
+
+		#endregion
+
+		private void InitializeDataZipper()
+		{
+			if (this.WindowState == FormWindowState.Minimized)
+			{
+				Hide();
+				notifyIcon.Visible = true;
+			}
+			else
+			{
+				timerLogRefresher.Interval = 1000;
+				timerLogRefresher.Start();
+			}
+		}
+
 		private void InitializeLogger()
 		{
-			m_Logger = new Logger(m_LogPath);
+			m_Logger = new Logger(m_LogPath, m_Lock);
 		}
 
 		private void PrepareAppDataPaths()
@@ -92,8 +265,6 @@ namespace DataZipper
 
 		private void InitializeConfigurations(List<Configuration> configurations)
 		{
-			
-
 			foreach (Configuration configuration in configurations)
 			{
 				Zipper zipper = new Zipper(configuration, m_Logger);
@@ -117,6 +288,19 @@ namespace DataZipper
 			}
 		}
 
+		private void CleanupTemporaryPaths()
+		{
+			foreach (var directory in new DirectoryInfo(m_TemporaryPath).GetDirectories())
+			{
+				int matchingDirectories = m_Configurations.Where(x => x.Name == directory.Name).Count();
+
+				if (matchingDirectories == 0)
+				{
+					Directory.Delete(directory.FullName, true);
+				}
+			}
+		}
+
 		private string ReplaceInvalidChars(string filename)
 		{
 			return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
@@ -124,327 +308,19 @@ namespace DataZipper
 
 		private void UpdateConfigListBox()
 		{
+			listBoxConfigs.Items.Clear();
+
 			foreach (Configuration configuration in m_Configurations)
 			{
 				listBoxConfigs.Items.Add(configuration.Name);
 			}
 		}
 
-		private void InitializeNewConfiguration(Configuration newConfiguration)
-		{
-			List<Configuration> newConfigurations = new List<Configuration>() { newConfiguration };
-
-			InitializeTemporaryPaths(newConfigurations);
-			InitializeConfigurations(newConfigurations);
-			
-		}
-
-
-		// OLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLDOLD
-
-
-
-
-		// === Initialization ===
-		//private void InitializeDataZipperold()
-		//{
-		//	string applicationDataFolder = Environment.ExpandEnvironmentVariables($@"%AppData%\Data Zipper\");
-
-		//	logPath = applicationDataFolder + DateTime.Now.ToString("yyyyMMdd") + ".log";
-		//	configPath = applicationDataFolder + "configuration.xml";
-		//	tmpPath = applicationDataFolder + "tmp";
-
-		//	logger = new Logger(logPath);
-
-		//	if (File.Exists(configPath))
-		//	{
-		//		config = LoadConfig(configPath);
-
-		//		timerMain.Interval = config.Interval * 60 * 1000;
-		//		timerMain.Start();
-		//		DataZip();
-		//	}
-		//	else
-		//	{
-		//		config = new Configuration();
-		//	}
-
-		//	if (this.WindowState == FormWindowState.Minimized)
-		//	{
-		//		Hide();
-		//		notifyIcon.Visible = true;
-		//	}
-		//	else
-		//	{
-		//		timerLogRefresher.Interval = 1000;
-		//		timerLogRefresher.Start();
-		//	}
-		//}
-
 		private void SaveConfigurations(List<Configuration> configurations)
 		{
 			string json = JsonConvert.SerializeObject(configurations, Newtonsoft.Json.Formatting.Indented);
 
 			File.WriteAllText(m_ConfigurationsPath, json);
-
-			
 		}
-
-
-		private void buttonNewConfig_Click(object sender, EventArgs e)
-		{
-			ConfigurationForm configurationForm = new ConfigurationForm(new Configuration());
-			configurationForm.Text = configurationForm.Text.Replace("%ACTION%", "New");
-
-			if (configurationForm.ShowDialog() == DialogResult.OK)
-			{
-				Configuration newConfiguration = configurationForm.Configuration;
-
-				m_Configurations.Add(newConfiguration);
-				SaveConfigurations(m_Configurations);
-				InitializeNewConfiguration(newConfiguration);
-			}
-
-		}
-
-		private void buttonEditConfig_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonTrashConfig_Click(object sender, EventArgs e)
-		{
-
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//// === Config operations ===
-		//public Configuration LoadConfig(string FileName)
-		//{
-		//	using (var stream = System.IO.File.OpenRead(FileName))
-		//	{
-		//		var serializer = new XmlSerializer(typeof(Configuration));
-		//		return serializer.Deserialize(stream) as Configuration;
-		//	}
-		//}
-
-		//public void SaveConfig(string FileName, Configuration toSerialize)
-		//{
-		//	using (StreamWriter writer = new StreamWriter(FileName))
-		//	{
-		//		var serializer = new XmlSerializer(toSerialize.GetType());
-		//		serializer.Serialize(writer, toSerialize);
-		//	}
-		//}
-
-
-		//// === Form hiding as notify icon ===
-		private void notifyIcon_Click(object sender, EventArgs e)
-		{
-			Show();
-			this.WindowState = FormWindowState.Normal;
-			notifyIcon.Visible = false;
-
-			timerLogRefresher.Start();
-		}
-
-		//private void FormMain_Resize(object sender, EventArgs e)
-		//{
-		//	if (this.WindowState == FormWindowState.Minimized)
-		//	{
-		//		Hide();
-		//		notifyIcon.Visible = true;
-
-		//		timerLogRefresher.Stop();
-		//	}
-		//}
-
-
-		//// === Form actions ===
-		//private void buttonSources_Click(object sender, EventArgs e)
-		//{
-		//	using (OpenFileDialog openFileDialog = new OpenFileDialog())
-		//	{
-		//		openFileDialog.InitialDirectory = @"C:\";
-		//		openFileDialog.Multiselect = true;
-
-		//		if (openFileDialog.ShowDialog() == DialogResult.OK)
-		//		{
-		//			config.Sources.Clear();
-
-		//			foreach (var item in openFileDialog.FileNames)
-		//			{
-		//				config.Sources.Add(item);
-		//			}
-		//		}
-		//	}
-		//}
-
-		//private void buttonDestination_Click(object sender, EventArgs e)
-		//{
-		//	using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
-		//	{
-		//		DialogResult result = folderBrowserDialog.ShowDialog();
-		//		if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
-		//		{
-		//			config.Destination = folderBrowserDialog.SelectedPath;
-		//		}
-		//	}
-		//}
-
-		//private void numericUpDownInterval_ValueChanged(object sender, EventArgs e)
-		//{
-		//	//config.Interval = (int)numericUpDownInterval.Value;
-		//}
-
-		//private void textBoxName_TextChanged(object sender, EventArgs e)
-		//{
-		//	//config.Name = textBoxName.Text;
-		//}
-
-		//private void buttonSaveConfig_Click(object sender, EventArgs e)
-		//{
-		//	SaveConfig(configPath, config);
-
-		//	MessageBox.Show("Successfully saved.");
-		//}
-
-		//private void buttonRestartZipper_Click(object sender, EventArgs e)
-		//{
-		//	if (File.Exists(configPath))
-		//	{
-		//		config = LoadConfig(configPath);
-
-		//		if (timerMain.Enabled)
-		//		{
-		//			timerMain.Stop();
-		//		}
-
-		//		timerMain.Interval = config.Interval * 60 * 1000;
-		//		timerMain.Start();
-
-		//		logger.Log("Data Zipper restarted.");
-		//		DataZip();
-		//	}
-		//	else
-		//	{
-		//		logger.Log("Data Zipper restarted.");
-		//	}
-		//}
-
-
-		//// === Data zipping ===
-		//private void DataZip()
-		//{
-		//	Stopwatch zippingTime = new Stopwatch();
-		//	zippingTime.Start();
-
-		//	if (Directory.Exists(tmpPath))
-		//	{
-		//		foreach (var item in Directory.GetFiles(tmpPath))
-		//		{
-		//			File.Delete(item);
-		//		}
-
-		//		Directory.Delete(tmpPath);
-		//	}
-		//	Directory.CreateDirectory(tmpPath);
-
-		//	try
-		//	{
-		//		foreach (var item in config.Sources)
-		//		{
-		//			File.Copy(item, tmpPath + @"\" + item.Substring(item.LastIndexOf('\\')));
-		//		}
-
-		//		string fullDestination = config.Destination + @"\" + config.Name + ".zip";
-		//		string temporaryDestination = tmpPath + config.Name + ".zip";
-
-		//		ZipFile.CreateFromDirectory(tmpPath, temporaryDestination);
-
-
-		//		File.Copy(temporaryDestination, fullDestination, true);
-
-		//		File.Delete(temporaryDestination);
-
-		//		logger.Log($"Zipping finished successfully in {zippingTime.ElapsedMilliseconds} ms.");
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		logger.Log($"Zipping failed after {zippingTime.ElapsedMilliseconds} ms.");
-		//		logger.Log($"Error message: {ex.Message}");
-		//	}
-		//}
-
-
-		//// === Timers ===
-		//private void timerMain_Tick(object sender, EventArgs e)
-		//{
-		//	DataZip();
-		//}
-
-		private void timerLogRefresher_Tick(object sender, EventArgs e)
-		{
-			using (StreamReader sr = new StreamReader(m_LogPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log"))
-			{
-				List<string> lines = new List<string>();
-
-				while (!sr.EndOfStream)
-				{
-					lines.Add(sr.ReadLine());
-				}
-
-				int count = lines.Count;
-				int visibleItems = listBoxLog.ClientSize.Height / listBoxLog.ItemHeight;
-
-				if (count > visibleItems)
-				{
-					lines.RemoveRange(0, count - visibleItems);
-				}
-
-				listBoxLog.Items.Clear();
-				listBoxLog.Items.AddRange(lines.ToArray());
-			}
-		}
-
-
-		//// === Other ===
-		//private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
-		//{
-		//	logger.Log("Data Zipper stoppped.");
-		//}
-
-		private void listBox1_TabIndexChanged(object sender, EventArgs e)
-		{
-			var x = listBoxConfigs.Items[listBoxConfigs.TabIndex];
-
-			;
-
-		}
-
-		private void listBox1_SelectedValueChanged(object sender, EventArgs e)
-		{
-			var x = listBoxConfigs.Items[listBoxConfigs.SelectedIndex];
-
-			;
-		}
-
-		
 	}
 }

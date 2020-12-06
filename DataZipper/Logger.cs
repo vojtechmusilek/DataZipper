@@ -11,35 +11,48 @@ namespace DataZipper
 	public class Logger
 	{
 		private string m_LogPath;
-		private readonly object m_Lock = new object();
+		private string m_LogDirectory;
+		private DateTime m_LogDateTime;
+		private readonly object m_Lock;
 
-		public Logger(string logPath)
+		public Logger(string logPath, object logLock)
 		{
 			m_LogPath = logPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+			m_LogDateTime = DateTime.Now;
+			m_LogDirectory = logPath;
+			m_Lock = logLock;
 
-			Log("Data Zipper started.");
+			Log("### Data Zipper successfully started ###");
 		}
 
-		public void Log(string name, string text)
+		private void CheckLog()
 		{
-			//todo check date - kdyz je jiny den tak vytvorit novy config
-
 			lock (m_Lock)
 			{
-				using (StreamWriter sw = new StreamWriter(m_LogPath, true))
+				if (m_LogDateTime.Date != DateTime.Now.Date)
 				{
-					sw.WriteLine($"[{GetTimestamp()} {name}]: {text}");
+					m_LogPath = m_LogDirectory + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+					m_LogDateTime = DateTime.Now;
+				}
+
+				if (!File.Exists(m_LogPath))
+				{
+					var newLog = File.Create(m_LogPath);
+					newLog.Close();
 				}
 			}
+		}
 
-			
+		public void Log(string text, string name)
+		{
+			Log($"{text} ({name})");
 		}
 
 		public void Log(string text)
 		{
-			//todo check date - kdyz je jiny den tak vytvorit novy config
+			CheckLog();
 
-			lock (m_LogPath)
+			lock (m_Lock)
 			{
 				using (StreamWriter sw = new StreamWriter(m_LogPath, true))
 				{

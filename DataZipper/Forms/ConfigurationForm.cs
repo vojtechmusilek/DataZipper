@@ -19,9 +19,14 @@ namespace DataZipper.Forms
 			InitializeComponent();
 
 			Configuration = configuration;
+
+			if (configuration.Name != null)
+			{
+				textBoxName.Text = configuration.Name;
+				numericUpDownInterval.Value = configuration.Interval;
+				checkBoxEnabled.Checked = configuration.Enabled;
+			}
 		}
-
-
 
 		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -44,14 +49,15 @@ namespace DataZipper.Forms
 			{
 				openFileDialog.InitialDirectory = @"C:\";
 				openFileDialog.Multiselect = true;
+				
 
 				if (openFileDialog.ShowDialog() == DialogResult.OK)
 				{
-					Configuration.SourcePaths.Clear();
+					Configuration.SourceFiles.Clear();
 
 					foreach (var item in openFileDialog.FileNames)
 					{
-						Configuration.SourcePaths.Add(item);
+						Configuration.SourceFiles.Add(item);
 					}
 				}
 			}
@@ -65,6 +71,18 @@ namespace DataZipper.Forms
 				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
 				{
 					Configuration.DestinationPath = folderBrowserDialog.SelectedPath;
+				}
+			}
+		}
+
+		private void buttonSourceFolders_Click(object sender, EventArgs e)
+		{
+			using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+			{
+				DialogResult result = folderBrowserDialog.ShowDialog();
+				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+				{
+					Configuration.SourceFolder = folderBrowserDialog.SelectedPath;
 				}
 			}
 		}
